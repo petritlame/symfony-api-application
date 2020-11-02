@@ -5,12 +5,20 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity("email")
  */
 class User implements UserInterface
 {
+
+    public function __construct()
+    {
+        $this->roles = array('ROLE_USER');
+    }
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -33,6 +41,7 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
 
     public function getId(): ?int
     {
@@ -75,6 +84,7 @@ class User implements UserInterface
 
     public function setRoles(array $roles): self
     {
+        $roles = (count($roles) == 0) ? ["ROLE_USER"] : $roles;
         $this->roles = $roles;
 
         return $this;
@@ -108,7 +118,7 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
+        // If you store any temporary, sensitive data on tcreateBuilderhe user, clear it here
         // $this->plainPassword = null;
     }
 }

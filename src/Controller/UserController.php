@@ -5,27 +5,21 @@ namespace App\Controller;
 
 
 use App\Entity\User;
-use App\Traits\ApiTraits;
+use PhpParser\Node\Expr\New_;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Helpers\ApiCodes;
 
 /**
  * Class UserController
  * @package App\Controller
- * @Route("/users")
  */
 
 class UserController extends AbstractController
 {
-    use ApiTraits;
 
-    /**
-     * @Route("/", name="getUsers", methods={"GET"})
-     */
-    public function index()
-    {
-        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
-        return $this->responseToJson(ApiCodes::getSuccessMessage(), ApiCodes::SUCCESS, $users);
-    }
+
 }
