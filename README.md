@@ -12,25 +12,7 @@ This API uses `POST` request to communicate and HTTP [response codes](https://en
 422: Unprocessable Entity 
 50X: Server Error
 ```
-### Error Codes Details
-```
-100: Bad Request
-110: Unauthorized
-120: User Authenticaion Invalid
-130: Parameter Error
-140: Item Missing
-150: Conflict
-160: Server Error
-```
-### Example Error Message
-```json
-http code 402
-{
-    "code": 120,
-    "message": "invalid crendetials",
-    "resolve": "The username or password is not correct."
-}
-```
+
 
 ## Login
 **You send:**  Your  login credentials.
@@ -38,7 +20,7 @@ http code 402
 
 **Request:**
 ```json
-POST /login HTTP/1.1
+POST /api/login HTTP/1.1
 Accept: application/json
 Content-Type: application/json
 Content-Length: xy
@@ -56,8 +38,7 @@ Content-Type: application/json
 Content-Length: xy
 
 {
-   "apitoken": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-   "expirationDate": "2018-02-13T15:31:55.559Z"
+   "token": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 }
 ```
 **Failed Response:**
@@ -68,8 +49,54 @@ Content-Type: application/json
 Content-Length: xy
 
 {
-    "code": 120,
-    "message": "invalid crendetials",
-    "resolve": "The username or password is not correct."
+    "code": 401,
+    "message": "Invalid credentials."
+}
+
+``` 
+## Register 
+**You send:**  Your register credentials.
+**You get:** An `User Object` with wich you can make further actions.
+
+**Request:**
+```json
+POST /api/login HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Content-Length: xy
+
+{
+    "email": "foo@gmail.com",
+    "password": {
+        "first": "password", 
+        "second": "password"
+    }
+}
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Server: My RESTful API
+Content-Type: application/json
+Content-Length: xy
+
+{
+    "email": "titilame9w5@gmail.com",
+    "roles": [
+        "ROLE_USER"
+    ]
+}
+```
+**Failed Response:**
+```json
+HTTP/1.1 200 Unauthorized
+Server: My RESTful API
+Content-Type: application/json
+Content-Length: xy
+
+{
+    "email": [
+        "This value is already used."
+    ]
 }
 ``` 
