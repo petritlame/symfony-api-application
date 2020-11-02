@@ -3,9 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\User;
-use App\Interfaces\UserRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -18,8 +18,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    private $passwordEncoder;
+
+    public function __construct(ManagerRegistry $registry, UserPasswordEncoderInterface $passwordEncoder)
     {
+        $this->passwordEncoder = $passwordEncoder;
         parent::__construct($registry, User::class);
     }
 
@@ -68,5 +71,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findOneById(int $id)
     {
         // TODO: Implement findOneById() method.
+    }
+
+    public function createUser($user): User
+    {
+        if (!$user instanceof User) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+        }
+        $password = $this->passwordEncoder->encodePassword($user, $user->getPassword());
+        $user->setPassword($password);
+
+        $this->_em->persist($user);
+        $this->_em->flush();
+
+        return $user;
     }
 }
